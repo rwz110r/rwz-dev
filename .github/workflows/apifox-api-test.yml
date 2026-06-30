@@ -28,9 +28,10 @@ jobs:
 
       # 步骤3：全局安装Apifox CLI工具
       - name: 安装Apifox CLI
-        run: 
+        run: |
           npm config set registry https://registry.npmmirror.com
           npm install -g apifox-cli
+          apifox --version
 
       # 步骤4：执行Apifox自动化测试（核心步骤）
       - name: 执行Apifox接口测试套件
