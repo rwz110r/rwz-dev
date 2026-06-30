@@ -41,11 +41,11 @@ jobs:
         run: |
           apifox run \
           --access-token $APIFOX_TOKEN \
-          --test-suite 8429730 \
-          --env 46591575 \
-          -n 1 \
-          -r html,cli,junit \
-          --out-dir ./apifox-report
+          --suite-id 8429730 \
+          --environment-id 46591575 \
+          --repeat 1 \
+          --reporter html,cli,junit \
+          --output ./apifox-report
 
       # 步骤5：上传测试报告为流水线产物，可在线下载
       - name: 上传Apifox测试报告
