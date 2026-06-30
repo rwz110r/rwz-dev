@@ -1,0 +1,60 @@
+# 流水线名称，GitHub页面展示
+name: Apifox 接口自动化测试流水线
+# 触发规则：什么操作会自动跑测试
+on:
+  # 代码推送到分支时触发
+  push:
+    branches: [ dev, main ]
+  # 提交PR合并请求时触发（MR门禁，失败禁止合并）
+  pull_request:
+    branches: [ dev, main ]
+
+# 并行任务
+jobs:
+  api_auto_test:
+    # 使用GitHub官方Ubuntu云端运行环境
+    runs-on: ubuntu-latest
+    # 执行步骤
+    steps:
+      # 步骤1：拉取当前仓库全部代码
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+
+      # 步骤2：安装Node.js 18（Apifox CLI依赖Node环境）
+      - name: 配置Node.js 18 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm' # 缓存npm依赖，加速下次运行
+
+      # 步骤3：全局安装Apifox CLI工具
+      - name: 安装Apifox CLI
+        run: npm install -g @apifox/cli
+
+      # 步骤4：执行Apifox自动化测试（核心步骤）
+      - name: 执行Apifox接口测试套件
+        env:
+          # 读取仓库保存的密钥，无需硬编码令牌
+          APIFOX_TOKEN: ${{ secrets.APIFOX_ACCESS_TOKEN }}
+        run: |
+          apifox run \
+          --access-token $APIFOX_TOKEN \
+          --test-suite 8429730 \
+          --env 46591575 \
+          -n 1 \
+          -r html,cli,junit \
+          --out-dir ./apifox-report
+
+      # 步骤5：上传测试报告为流水线产物，可在线下载
+      - name: 上传Apifox测试报告
+        uses: actions/upload-artifact@v4
+        with:
+          artifact-name: apifox-自动化测试报告
+          path: apifox-report/ # 报告输出目录，和上面命令保持一致
+
+      # 步骤6：解析JUnit测试报告，在GitHub页面展示用例统计
+      - name: 展示测试结果
+        uses: actions/test-reporter@v0.1.1
+        with:
+          name: API测试用例结果
+          path: apifox-report/*.xml
