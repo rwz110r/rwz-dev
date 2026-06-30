@@ -53,3 +53,15 @@ jobs:
         uses: test-summary/action@v2
         with:
           paths: apifox-report/*.xml
+      # 测试结果推送飞书（仅Job失败时触发）
+      - name: 推送测试失败告警到飞书群
+        if: failure() # 仅流水线失败才执行
+        run: |
+          curl -X POST https://open.feishu.cn/open-apis/bot/v2/hook/80b4b510-534d-4fd5-8d88-f553194abd59 \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"msg_type\": \"text\",
+            \"content\": {
+              \"text\": \"【Apifox接口自动化告警】流水线执行失败！\n仓库：${{ github.repository }}\n分支：${{ github.ref_name }}\n提交人：${{ github.actor }}\n流水线链接：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n失败用例数量：3条，请查看报告修复接口断言！\"
+            }
+          }"
