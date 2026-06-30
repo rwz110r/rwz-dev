@@ -39,13 +39,7 @@ jobs:
           # 读取仓库保存的密钥，无需硬编码令牌
           APIFOX_TOKEN: ${{ secrets.APIFOX_ACCESS_TOKEN }}
         run: |
-          apifox run \
-          --access-token $APIFOX_TOKEN \
-          --suite-id 8429730 \
-          --environment-id 46591575 \
-          --repeat 1 \
-          --reporter html,cli,junit \
-          --output ./apifox-report
+          apifox run --access-token $APIFOX_TOKEN -t 8429730 -e 46591575 -n 1 -r html,cli
 
       # 步骤5：上传测试报告为流水线产物，可在线下载
       - name: 上传Apifox测试报告
