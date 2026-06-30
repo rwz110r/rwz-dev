@@ -25,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm' # 缓存npm依赖，加速下次运行
 
       # 步骤3：全局安装Apifox CLI工具
       - name: 安装Apifox CLI
