@@ -4,10 +4,10 @@ name: Apifox 接口自动化测试流水线
 on:
   # 代码推送到分支时触发
   push:
-    branches: [ dev, main ]
+    branches: [ master, dev, main ]
   # 提交PR合并请求时触发（MR门禁，失败禁止合并）
   pull_request:
-    branches: [ dev, main ]
+    branches: [ master, dev, main ]
 
 # 并行任务
 jobs:
